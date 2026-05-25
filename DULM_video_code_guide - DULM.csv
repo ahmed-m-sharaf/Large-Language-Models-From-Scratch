@@ -1,0 +1,785 @@
+A deep understanding of AI large language model mechanisms,,,,
+Section name,Video lecture title,Python code file name,Udemy video #,Key take-home points
+Introductions,[IMPORTANT] Prerequisites and how to succeed in this course,-,1,"LLM architecture, training, and mechanisms are advanced topics. Have a positive attitude and embrace the challenge.
+Taking notes by hand helps you learn more and remember better. Lecture notes are not available.
+Having experience with coding, linear algebra, maching learning, and deep learning will help you excel in this course, although these topics are introduced in the course as they are necessary.
+You can choose which lectures to watch and to skip, but keep in mind that knowledge and skills are cumulative."
+,Using the Udemy platform,-,2,-
+,"Getting the course code, and the detailed overview",-,3,-
+,Do you need a Colab Pro subscription?,-,4,"You can access GPUs for free on Google Colab, though compute time and RAM are limited.
+Most of this course can be done on the CPU and limited GPU (free colab plan), but will be slower.
+Paying to upgrade to Colab Pro will be convenient for many lectures but is not necessary.
+You can upgrade to Pro and downgrade after the course."
+,"About the ""CodeChallenge"" videos",-,5,"You are the master of your education, and you should engage with this course in a way that best suits your skills and goals.
+Use different difficulty levels for different videos.
+Watch the code demos, even if you aren’t coding yourself."
+Part 1: Tokenizations and embeddings,,-,,
+Words to tokens to numbers,Why text needs to be numbered,-,7,"Text must be transformed into numbers before LLM.
+A chunk of text is a “token” and can be a character, subword, or full word.
+Embeddings are dense representations of tokens.
+Tokenization and embeddings are learned from data, and there are many ways to create these schemes."
+,Parsing text to numbered tokens,part1_text2num_text2numbers,8,"Text can be split into words via spaces, although this is not done in real tokenization.
+Encoder and decoder functions are simple look-up tables.
+Tokenization (encoding text using integers) is conceptually straightforward."
+,CodeChallenge: Create and visualize tokens (part 1),part1_text2num_CCmakeATokenizer,9,"Encoders and decoders are created using dictionary comprehension and functions.
+The “context” of a token is its neighbors (before and possibly after); “context window” is the number of neighbors."
+,CodeChallenge: Create and visualize tokens (part 2),part1_text2num_CCmakeATokenizer,10,"“One-hot encoding” is a sparse tokenization, with one row per token and one column per vocab item."
+,Preparing text for tokenization,part1_text2num_preparingText4tokens,11,"Real text from the web is easy to import but a pain to clean…
+Creating a tokenizing scheme is tricky and involves many choices with few clear optimal decisions.
+Encoders and decoders are easy to create and use."
+,CodeChallenge: Tokenizing The Time Machine,part1_text2num_CCtimeMachineTokens,12,"Randomly generated tokens are usually nonsensical.
+There is a mathematical relationship between word length and frequency (more on this later!), which has implications for LLM performance.
+Tokenizers need special characters to deal with unknown tokens."
+,Tokenizing characters vs. subwords vs. words,-,13,"Every tokenization scheme has advantages and limitations.
+Current best tokenizers use a combination of characters, subwords, and words.
+The vocab is learned based on statistical characteristics of human-written text."
+,Byte-pair encoding algorithm,part1_text2num_bytePairEncoding,14,"The BPE algorithm is based on replacing frequent token sequences with new tokens.
+The basic BPE algorithm is simple and easy to implement.
+Production-level tokenizers add several more steps to ensure accuracy, efficiency, and speed."
+,CodeChallenge: Byte-pair encoding to a desired vocab size,part1_text2num_CCbytePairEncodingLoop,15,"Even simple byte-pair encoding on a tiny datset creates tokens with preceeding spaces, just like professional tokenizers."
+,Exploring ChatGPT4's tokenizer,part1_text2num_GPT4tokenizer,16,"OpenAI’s tokenizer is available, but is model-specific (e.g., GPT2 vs. GPT4).
+Tokenizers use character- subword- and word-level tokens. Preceding spaces are part of tokens.
+No text preprocessing is necessary! Just feed all the text into the tokenizer."
+,CodeChallenge: Token count by subword length (part 1),part1_text2num_CCtokenEfficiency,17,"Words and tokens differ in several ways, though they can overlap.
+Words vary in their encoding efficiency, which is partly related to how often they appear in texts."
+,CodeChallenge: Token count by subword length (part 2),part1_text2num_CCtokenEfficiency,18,"Words and tokens differ in several ways, though they can overlap.
+Words vary in their encoding efficiency, which is partly related to how often they appear in texts."
+,"How many ""r""s in strawberry?",part1_text2num_strawberry,19,"ChatGPT has difficulties with letter-based calculations because it represents words as tokens.
+Asking ChatGPT to implement its calculations in python increases accuracy (same for math problems)."
+,CodeChallenge: Create your algorithmic rapper name :),part1_text2num_CCrapperName,20,"Tokenization can be fun!
+Tokenizers take lists, not ints, as input."
+,Tokenization in BERT,part1_text2num_BERT,21,"Different tokenizers are optimized for different purposes.
+BERT tokenizer has more words (vs. subwords) than GPT, and is therefore more human-interpretable.
+BERT tokenizer by default adds special tokens before and after text. Don’t forget about this!"
+,CodeChallenge: Character counts in BERT tokens,part1_text2num_CCbertChars,22,"Professional tokenizers are easy to work with once you get used to them.
+Tokenizers contain “special tokens” that you might want to filter out of analyses."
+,Translating between tokenizers,part1_text2num_tokenTranslation,23,"Write your code for one specific tokenizer.
+Choose the tokenizer (and LLM!) based on your goals."
+,CodeChallenge: More on token translation,part1_text2num_CCtranslatorFuns,24,"The more familiar you are with tokenization, the easier it will be to understand embeddings and LLM mechanisms."
+,CodeChallenge: Tokenization compression ratios,part1_text2num_CCtokenCompression,25,"Importing text data from the web is really easy.
+Tokenization = compression? The primary goal of a tokenizer is to make text more efficient for LMs, but compression is a common byproduct due to redundancies in (some) written languages.
+Token compression ratios are stable across different texts, with higher variability for text that includes code."
+,Tokenization in different languages,part1_text2num_languages,26,"Tokenization ≠ compression (but it often is).
+Languages that have more complex written forms (e.g., morphemes in Chinese, richer morphology in Tamil) may require more tokens that characters.
+Tokenization is less effective in languages they have less training data on."
+,CodeChallenge: Zipf's law in characters and tokens,part1_text2num_CCzipf,27,"Zipf’s law, a.k.a. power-law scaling, a.k.a. scale-free organization, a.k.a. fractal-like, a.k.a. self-similarity is a pervasive characteristic of biological and physical systems, and is taken as evidence of complex systems.
+Modern computing tools and accessible digitized datasets allow you to explore nature in ways that were unthinkable until very recently."
+,Word variations in Claude tokenizer,part1_text2num_ClaudeVariations,28,"Spaces are meaningful to humans, but are treated just like any other character to tokenizers.
+Lots of subwords and words have preceding spaces.
+Language models need a huge amount of data to learn all the ambiguities, errors, and varieties in human text."
+Embedding spaces,Word2Vec vs. GloVe vs. GPT vs. BERT... oh my!,-,29,"There are several word embeddings matrices that have different goals and applications, and are created in different ways. It is not trivial to compare them (more on this in the mech.interp section). The embeddings used in LLMs are not fixed, but instead are adjusted by the model based on context."
+,Exploring GloVe pretrained embeddings,part1_embed_GloVe,30,"The GloVe embeddings can be used to study texts and relations between words.
+The embeddings vectors are fixed once trained.
+GloVe is not used in LLMs, partly because of the large and word-based vocabularies.
+Cosine similarity has many applications in language modeling and computational linguistics."
+,CodeChallenge: Wikipedia vs. Twitter embeddings (part 1),part1_embed_CCwikiVsTwitter,31,"A lot of diversity across word embeddings matrices.
+It is difficult or impossible to compare different embeddings matrices directly, but sets of relationships can be compared (see RSA in next section!).
+Visualizing embeddings vectors often helps with interpretation."
+,CodeChallenge: Wikipedia vs. Twitter embeddings (part 2),part1_embed_CCwikiVsTwitter,32,"A lot of diversity across word embeddings matrices.
+It is difficult or impossible to compare different embeddings matrices directly, but sets of relationships can be compared (see RSA in next section!).
+Visualizing embeddings vectors often helps with interpretation."
+,Exploring GPT2 and BERT embeddings,part1_embed_GPT2BERT,33,"All model parameters of publicly available LLMs are easily accessible.
+GPT2 and BERT embeddings are not directly comparable, though model comparisons are possible (see next section).
+LLM embeddings are not fixed! They are adjusted by attention and MLP layer as they pass through the LM."
+,CodeChallenge: Math with tokens and embeddings,part1_embed_CCmathWithTokens,34,"Token indices are arbitrarily mapped to meaningful subwords (numbers).
+“Token math” makes no sense (but can be fun :P ).
+Embeddings vectors, however, can be manipulated mathematically — this is how LLM attention works!
+Use LLMs for math theory/explanations, have it solve math problems by writing code to solve the problems."
+,Cosine similarity (and relation to correlation),part1_embed_cosineSimilarity,35,"Cosine similarity is one of the most commonly used measures of a relationship between two variables when working with embeddings and LLMs.
+Cosine similarity is related to correlation: Both variance-normalize; Pearson additionally mean-centers.
+Use the correlation to quantify a linear relationship in data that have different scales or mean offsets.
+But when the variables are in the same scale and offsets are meaningful, use cosine similarity. This is often the case in LLM investigations.
+When learning a new technical topic, try to code the math yourself; in applications, use established libraries if available and if it’s easier."
+,CodeChallenge: GPT2 cosine similarities,part1_embed_CCcosineSimilaritiesGPT2,36,"Multitoken words present several challenges in LLM investigations (hint: give the model context and only analyze the final token).
+Understanding the math of analyses makes you a better and more flexible data scientist."
+,CodeChallenge: Unembeddings (vectors to tokens),part1_embed_CCunembedding,37,"An “unembeddings matrix” is the conceptual inverse of the embeddings matrix (but not a literal inverse matrix).
+The token with the largest unembeddings value is the next token in a generated sequence.
+Generated text can quickly lose meaning, which was a major hurdle for language models to overcome.
+The broad strokes mechanisms of next-token generation is simple conceptually and mathematically."
+,Position embeddings,part1_embed_positionEmbeddings,38,"Language models use position embeddings to focus on tokens from various locations (“time points”) in the token sequence.
+Predefined position embeddings are probably good enough for smaller models; modern architectures use learned embeddings.
+Cosine similarity matrices can be tricky to interpret, but convey a lot of information."
+,CodeChallenge: Exploring position embeddings,part1_embed_CCpositionExplorations,39,"The position embeddings matrix is complicated and impacts token processing in ways that are difficult to predict a priori.
+Visual appearances (especially of apparent null effects) should be statistically evaluated using shuffled data before making strong interpretations.
+The shuffling method here was too liberal; circular shifting and spectral phase scrambling are better."
+,Training embeddings from scratch,-,40,"Embeddings matrices in LLMs are trained with the rest of the model. In the next several videos, however, we will train only and embeddings layer, to focus on the mechanisms of learning embeddings."
+,Create a data loader to train a model,part1_embed_learnEmbeddings,41,"Preparing data to train models can become complicated (a common experience in many data fields…).
+Simpler data organization methods are possible, but can be suboptimal for professional-grade model training."
+,Build a model to learn the embeddings,part1_embed_learnEmbeddings,42,"Embeddings matrices are learned from text data using gradient descent and dimension-squeezing deep learning models.
+The embedding dimension is preserved throughout the entire language model.
+Language models generate text by concatenating one new token onto an existing token sequence."
+,Loss function to train the embeddings,part1_embed_lossfunction,43,"Negative log likelihood is the main loss function used in language model training.
+Log softmax increases sensitivity at small probabilities, and gives a stronger penalty for errors.
+Most loss functions (and other mathematical bases of DL) are simple and well-defined. Difficulties arise from the explosive dimensionality of models."
+,Train and evaluate the model,part1_embed_learnEmbeddings,44,"Language models are trained on a small number of epochs, because each epoch has a huge amount of data (batches).
+GPU access will be increasingly important as the course progresses…"
+,CodeChallenge: How the embeddings change,part1_embed_learnEmbeddings,45,"The embeddings vectors expanded to fill up more of the embeddings space, reflecting encoding of high-dimensional information in a lower-dimensional space.
+Interpretable semantic relationships (as measured through Sc) emerge even with a small amount of targeted training data, though the strength is weak."
+,CodeChallenge: How stable are embeddings?,part1_embed_learnEmbeddings,46,"Embeddings vectors of the same token appear to be completely unrelated across repeated training runs.
+Cosine similarity appears to be more consistent for related tokens.
+Relative embeddings within a matrix are more interpetable than absolute vectors or across matrices.
+The loss profile is relevant, but is just a tiny glimpse at what happens during training."
+Part 2: Large language models,,,,
+Build a GPT,Why build when you can download?,-,48,"Building a model from scratch is a fantastic way to learn how LLMs are created and trained.
+Please don’t ever build an LLM from scratch again (except for more education)"
+,Model 1: Embedding (input) and unembedding (output),part2_build_model1,49,"Saying that language models “use only the final token"" for next-token prediction is not accurate. They  use all tokens; the final token contains the most information.
+Next-token selection is probabilistic.
+LLMs get complicated quickly; it’s good to learn about them one step at a time.
+"
+,Understanding nn.Embedding and nn.Linear,part2_build_embeddingVlinear,50,nn.Embedding is a convenient wrapper for nn.Parameter. Use it to create embeddings matrices.
+,CodeChallenge: GELU vs. ReLU,part2_build_CCreluVgelu,51,"GELU is the most common activation function in LLMs. It is more complicated than ReLU but smoother.
+Many PyTorch functions are available as functions and classes; using one or the other is sometimes by necessity and sometimes a personal choice.
+Measuring computation time is not trivial, because of optimized implementations, GPU fusing, overhead, etc."
+,"Softmax (and temperature): math, numpy, and pytorch",part2_build_softmax,52,"Softmax transforms LLM outputs from “raw” values (logits) into a probability distribution.
+Temperature increases stochasticity, which helps language models produce more “creative” text. Typical temperatures are .5—1.5.
+You’ll learn more about nuances of softmax theory and implementation in later videos."
+,Randomly sampling words with torch.multinomial,part2_build_multinomial,53,"torch.multinomial directly maps token probability values onto selection probabilities.
+Many PyTorch functions are sensitive to input data type — something to check if (when) you get errors!
+Numpy and pytorch functions can sometimes produce identical results given proper input arguments, but often not by default. Be careful when translating between libraries."
+,"Other token sampling methods: greedy, top-k, and top-p",-,54,"There is no right or wrong token selection method.
+Random sampling can increase response variability, which might be good for social chatting but bad for coding or legal documents.
+The sampling method interacts with softmax temperature: Higher temperatures have stronger boosts of fewer tokens."
+,CodeChallenge: More softmax explorations,part2_build_CCsoftmaxExtreme,55,"Softmax is mathematically simple, but some aspects of the transformation are apparent only for some numerical ranges.
+The number of data values (e.g., vocab size) impacts the probability values, because they must all sum to 1."
+,"What, why, when, and how to layernorm",part2_build_layernorm,56,"Layernorm is simple and critical.
+“Set it and forget it”: The learned parameters have little theoretical relevance other than preserving numerical stability throughout the model."
+,"Model 2: Position embedding, layernorm, tied output, temperature",part2_build_model2,57,"Position embeddings are added to the token embeddings, and help the model learn temporal patterns.
+Embeddings are trained inside the model, not separately as with tokenization (c.f. previous section).
+Tokens in a sequence are processed simultaneously, not in a for-loop (causality from attention mechanism)."
+,Temporal causality via linear algebra (theory),-,58,"Time-causal attention can be implemented using a time vector in which the future is weighted zero while the past is weighted non-zero.
+Causality can be implemented using matrices and softmax-probability, which is very computationally efficient on GPUs.
+Causal attention is not necessary for LLMs, but improves next-token generation (good for chatbots)."
+,Averaging the past while ignoring the future (code),part2_build_pastWithLinalg,59,"Matrix multiplication with masks are an efficient way to avoid for-loops.
+PyTorch has optimized functions that fuse the attention algorithm, including the causal mask (next lecture!)."
+,"The ""attention"" algorithm (theory)",-,60,"The “attention” mechanism is a clever way of pooling information across different embeddings vectors that allows for surrounding context to modify the current token transformation.
+All analogies break down; some are useful (or at least entertaining).
+The full LLM Transformer architecture is more complicated than just attention, but attention is a key aspect."
+,CodeChallenge: Code Attention manually and in Pytorch,part2_build_CCattentionAlgo,61,"Q, K, and V matrices are trainable weights that are not changed during inference (applications).
+Q, K, and V are the activations resulting from multiplication with token embeddings vectors.
+“Highly optimized” functions can be hardware-specific.
+Very powerful LLMs require specialized hardware, the sale of which is regulated by governments."
+,Model 3: One attention head,part2_build_model3,62,"Attention adjusts (not replaces) the embeddings vectors as they pass through the model.
+Different tokenizers (and also different pretrained models) use different terms and variable names. Understanding how LLMs work will help you identify features in a model."
+,The Transformer block (theory),-,63,"The Transformer block contains an attention sublayer and an MLP sublayer. Together, they calculate an adjustment to the token embedding to point towards an appropriate next-token embedding.
+Expansion-nonlinearity-contraction is a typical MLP architecture for feature extraction and linear separability.
+LLMs comprise dozens of Transformer blocks that learn different features and timescales of texts."
+,The Transformer block (code),part2_build_transformer,64,"You can now implement a GPT-style Transformer :)
+Separating modules into callable classes helps keep code neat and organized.
+Both Transformer sublayers comprise the operations copy → normalize → adjustment → add back to copy."
+,Model 4: Multiple Transformer blocks,part2_build_model4,65,"Use nn.Sequential to create repeated instances of the same component of a model (with different weights matrices).
+Specialization of Transformer blocks is not imposed by the architecture, but is thought to be an emergent property. We’ll discuss this more in the mechanistic interpretability sections."
+,Multihead attention: theory and implementation,part2_build_multiheadAttention,66,"Multihead Attention (MHA) involves applying the attention equation to different slices of the QKV matrices.
+MHA is thought to increase the richness and complexity of feature isolation and context-sensitivity, without increasing the number of trainable parameters.
+Data from all heads are linearly combined via W0."
+,Working on the GPU,part2_build_GPU,67,"GPUs are great at number-crunching, and can save a lot of time in LLM training and applications.
+On the other hand, the CPU can be sufficient for a lot of explorations and investigations of LLMs.
+Accessing and using a GPU might be expensive and requires additional code, so use it only when it's really beneficial."
+,Model 5: Complete GPT2 on the GPU,part2_build_model5,68,"We just built a GPT2-small :)  although the weights are all random, so it’s not functional.
+Commercial models, e.g., GPT4, have the same architecture and computations, but have more layers and parameters. But, quantitative increases can have qualitative impacts."
+,CodeChallenge: Time model5 on CPU and GPU,part2_build_CCgpuVsCpu,69,"LLMs are basically worthless without a large number of dedicated high-end GPUs.
+Regulating GPU access/sales is part of AI safety."
+,Inspecting OpenAI's GPT2,part2_build_OpenAIGPT2,70,"Publicly available pretrained models are really easy to use, explore, experiment with, and learn from."
+,Summarizing GPT using equations,-,71,"There are many ways to understand a deep learning model; a combination of perspectives (diagrams, explanations, code, equations) is most beneficial.
+Rewriting equations and checking matrix sizes can help you understand the flow and order of calculations.
+Neither Q nor K directly contribute to the embedding vector adjustment; their combination determines which vectors in V guide next-token selection."
+,Visualizing nano-GPT,https://bbycroft.net/llm,72,A neat website where you can visualize different GPT variants.
+,CodeChallenge: How many parameters? (part 1),part2_build_CCparameterCounts,73,"Biases are a tiny fraction of model parameters, which is why many deep learning models (especially models with layernorm) ignore them.
+MLP layers are dense and can have 2-3x as many parameters as attention layers.
+The number of parameters does not equate to importance in the model (cf layernorm).
+Examining and dissecting models are useful skills."
+,CodeChallenge: How many parameters? (part 2),part2_build_CCparameterCounts,74,"Biases are a tiny fraction of model parameters, which is why many deep learning models (especially models with layernorm) ignore them.
+MLP layers are dense and can have 2-3x as many parameters as attention layers.
+The number of parameters does not equate to importance in the model (cf layernorm).
+Examining and dissecting models are useful skills."
+,CodeChallenge: GPT2 trained weights distributions,part2_build_CCweightsDists,75,"Characteristics of model weights often have smooth transitions across layers, reflecting shifts in representations and calculations.
+In histograms, use counts for equal sample sizes, and use density (or other scaling) for unequal sample sizes."
+,CodeChallenge: Do we really need Q?,part2_build_CClobotomizeQ,76,"Causal manipulations are easy to implement, although knowing what to manipulate is challenging and non-trivial.
+Model evaluations are tricky. There are quantitative evaluation methods, but many evaluations are based on qualitative inspection of generated text."
+Pretrain LLMs,"What is ""pretraining"" and is it necessary?",-,77,"Pretraining is a necessary first step for any LLM. A pretrained model understands the structure and patterns of written language, and can generate text.
+Pretraining to create a useful modern base model is prohibitively expensive for most individuals and companies.
+You should learn how pretraining works, but don’t try it at home ;)"
+,Introducing huggingface.co,-,78,"HuggingFace provides resources for downloading pretrained LLMs (and other models), training datasets, and more. We will some some of the free resources in this course. You do not need a HuggingFace login to access materials for this course."
+,The AdamW optimizer,-,79,"L2 regularization in Adam involves updating and regularizing in one step (i.e., regularizing the update).
+AdamW updates the weights first, then regularizes (i.e., regularizing the weights).
+Without regularization, Adam==AdamW.
+AdamW implements “constant shrinkage” instead of “adaptive shrinkage,” and empirically better in large models."
+,CodeChallenge: SGD vs. Adam vs. AdamW,part2_pretrain_CCsgdVsAdams,80,"Simple mechanisms work better in simple models.
+Adam is adaptive and more likely to stabilize.
+Gradient accumulation speeds learning, but risks over-generalizing by pooling across more training data.
+Gradient accumulation is only used for training very large models, and you probably will always want to reset the gradients."
+,Train model 1,part2_pretrain_model1,81,"Code to train LLMs has the same basic organization as code to train any deep learning model.
+Even very simple models with little and limited training quickly learn text structure such as punctuation and line breaks."
+,CodeChallenge: Add a test set,part2_pretrain_CCmodel1test,82,"Creating and evaluating a test set is not so difficult, but requires extra code.
+Train/test splits are less important for pretraining LLMs, but is still good practice.
+Additional subtleties about devsets, model vs. researcher overfitting, etc., are not discussed here."
+,CodeChallenge: Train model 1 with GPT2's embeddings,part2_pretrain_CCmodel1withEmbeds,83,"Freezing weights is a common technique in deep learning for transfer learning or when re-training on limited data.
+Freezing weights is not necessarily advantageous, especially in simple models or if the new training data differ from the previously trained data."
+,CodeChallenge: Train model 5 with modifications,part2_pretrain_model5WithMods,84,"There are several ways to sample data, depending on how meticulous you want the procedure. Some overlap or skipping is less consequential with limitless training data.
+Models learn to produce “language-looking” text very quickly."
+,Create a custom loss function,part2_pretrain_customLoss,85,"Loss functions are extremely important for training deep learning models.
+Loss functions should be as simple as possible, both mathematically and in code implementation.
+Knowing how to create your own loss function gives you more control and flexibility over precise model designs and outcomes."
+,"CodeChallenge: Train a model to like ""X""",part2_pretrain_CCtrainXbias,86,"KL divergence is a useful loss function for training distributions instead of individual tokens.
+It is easy to train biases into models. This has major implications for fairness, misuse, persuasion or manipulation, cultural or political biases, marketing, and other AI safety topics."
+,CodeChallenge: Numerical scaling issues in DL models,part2_pretrain_CCscaling,87,"Each matrix multiplication (dot products) increases the variance and numerical range of numbers.
+This can have a negative impact on softmax probabilities by flattening the distribution.
+Repeated normalization is very important for the stability of deep learning models including LLMs."
+,Weight initializations,part2_pretrain_weightsInits,88,"Weight initialization is not important in small models, but is crucial for training large models including LLMs.
+Weights should be initialized to small values, often proportional to the matrix sizes.
+Bias terms are typically ignored in initializations, because there are so few bias terms.
+Any initialization is important; the exact details and distribution shape seems to be less relevant."
+,CodeChallenge: Train model 5 with weight inits,part2_pretrain_CCmodel5weightInits,89,"Now you know how to initialize weights :)
+Examining changes in the model during learning is an approaching in mechanistic interpretability. Weights distributions tend to widen as the models learn more diverse patterns and representations."
+,Dropout in theory and in Pytorch,part2_pretrain_dropout,90,"Dropout involves “switching off” units during training, and is thought to promote distributed representations.
+LLM pretraining sets are so large and diverse that dropout is less important compared to, e.g., CNNs.
+Dropout is more useful in fine-tuning when datasets are smaller and overfitting risk is higher."
+,Should you output logits or log-softmax(logits)?,-,91,"Calculating log-softmax inside the LLM is often fine and convenient during training and classification, but outputting the raw values allows for more flexibility in subsequent applications."
+,The FineWeb dataset,part2_pretrain_FineWeb,92,"HuggingFace provides several high-quality datasets for LLM training, including FineWeb (and several more specific variants)."
+,CodeChallenge: Fine dropout in model 5 (part 1),part2_pretrain_CCmodel5dropout,93,"Dropout is conceptually simple, but adding it to code can be tricky.
+There are many moving parts and parameters in an LLM; make sure to track variables and transformations.
+Models can learn very fast on small homogeneous datasets, but take longer to train on datasets with more variability."
+,CodeChallenge: Fine dropout in model 5 (part 2),part2_pretrain_CCmodel5dropout,94,"Dropout is conceptually simple, but adding it to code can be tricky.
+There are many moving parts and parameters in an LLM; make sure to track variables and transformations.
+Models can learn very fast on small homogeneous datasets, but take longer to train on datasets with more variability."
+,CodeChallenge: What happens to unused tokens?,part2_pretrain_CCunusedTokens,95,"Because softmax affects all token logits, not just the ones currently being processed, all tokens embeddings are trained inside the model, not just the ones that appear in the current token sequence.
+This has implications for model output coherence and accuracy for tokens that are less commonly used in training datasets (e.g., obscure topics, new coding languages)."
+,Optimization options,-,96,"There are many ways to decrease computation time during LLM training.
+Different strategies focus on the data, the model, or the hardware.
+LLMs take so long to pretrain that even a few milliseconds improvement per batch can be significant."
+Fine-tune pretrained models,"What does ""fine-tuning"" mean?",-,97,"Fine-tuning means making targeted adjustments to an existing pretrained model. It takes days or weeks instead of months, and has much smaller computational requirements.
+There are myriad choices in fine-tuning; the challenge is from knowing what you want to do with the model."
+,Fine-tune a pretrained GPT2,part2_finetune_GPT2gulliver,98,"Shortcuts are great, but make sure you understand the mechanisms before oversimplifying your code.
+Fine-tuning is easy to implement; the challenge comes from choosing the appropriate datasets.
+The learning rate should generally be lower.
+Model evaluation should rely on multiple qualitative and quantitative metrics."
+,CodeChallenge: Gulliver's learning rates,part2_finetune_CClearningRateGulliver,99,"Smaller learning rates are generally preferred during fine-tuning.
+There is a trade-off between preserving the base model and tweaking it towards the custom text. That balance depends on the application.
+Quantitative metrics are important and useful, but obscure a lot. Qualitative assessments are crucial."
+,On generating text from pretrained models,part2_finetune_HFgenerate,100,"The HuggingFace tokenizers and pretrained LLMs have many options for encoding and generating text. Some warning messages can be ignored, depending on your goal."
+,"CodeChallenge: Maximize the ""X"" factor",part2_finetune_CCboostX,101,"Fine-tuning can be tricky, because it is easy make a good base model be less useful.
+Fine-tuning in practice often involves a lot of testing, explorations, and starting again.
+KL divergence is a powerful loss function. Use it wisely ;)"
+,Alice in Wonderland and Edgar Allen Poe (with GPT-neo),part2_finetune_2models2styles,102,"There are many pretrained models to use and explore. Different models have slightly different architecture, different parameters, and different training datasets, based on the specific goals of the org.
+Models can easily adapt the writing style of text they are fine-tuned on."
+,CodeChallenge: Quantify the Alice/Edgar fine-tuning,part2_finetune_CC2modelsQuantify,103,"It would be great to rely entirely on quantitative evaluation scores, but for generative models, numbers don’t capture the success of training or the application value."
+,CodeChallenge: A chat between Alice and Edgar,part2_finetune_CCconvoAliceEdgar,104,"Concatenating token sequences, generating new tokens, and displaying only the newly generated tokens is a simplified implementation of chatbots.
+Additional training is required to get the models to “understand” the difference between the user and them."
+,Partial fine-tuning by freezing attention weights,part2_finetune_freezeAttention,105,"Freezing trainable parameters is toggled by the boolean requires_grad property of a tensor.
+There are many options for what and when to freeze, and the specific benefits of each choice are not clear.
+In practice, freezing involves a lot of testing, exploration, intuition, and mechinterp research."
+,CodeChallenge: Fine-tuning and targeted freezing (part 1),part2_finetune_CCfreezingNeo,106,"Precision freezing isn’t so difficult to implement; knowing which weights to freeze and why is challenging and uncertain.
+Freezing has many trade-offs.
+Hopefully, increased research on mechanistic interpretability will help guide targeted fine-tuning."
+,CodeChallenge: Fine-tuning and targeted freezing (part 2),part2_finetune_CCfreezingNeo,107,"Precision freezing isn’t so difficult to implement; knowing which weights to freeze and why is challenging and uncertain.
+Freezing has many trade-offs.
+Hopefully, increased research on mechanistic interpretability will help guide targeted fine-tuning."
+,Parameter-efficient fine-tuning (PEFT),-,108,"PEFT is a set of related techniques that allow you to fine-tune models with limited computational resources.
+PEFT methods are very restrictive, and tend to work well when the task is well-characterized, e.g., classification.
+Running and fine-tuning very large models still requires considerable resources!"
+,CodeGen for code completion,part2_finetune_CodeGen,109,"Always look for specialized pretrained models! They often come in multiple sizes (parameter counts).
+You have now seen how code-completion AI tools work."
+,CodeChallenge: Fine-tune codeGen for calculus,part2_finetune_CCcodeGenCalc,110,"To an LLM, any token sequence is just a token sequence; it is humans who make the distinction between spoken languages, code languages, time series, music, etc.
+Code tends to comprise more short tokens and a smaller vocab, making training more challenging.
+Before working on your application, look for the most relevant pretrained models."
+,Fine-tuning BERT for classification,part2_finetune_bert4classification,111,"Base models are very versatile, and you can use them in many ways.
+Procedures for importing datasets and models from 3rd party platforms can change; be prepared to modify your code.
+Be mindful of the appropriate loss function; it’s not always NLLLoss."
+,CodeChallenge: IMDB sentiment analysis using BERT,part2_finetune_CCbertClassifier,112,"Language models are very versatile and can be incorporated into myriad tasks that are based on processing text, code, or any other temporal sequence that can be tokenized.
+Accuracy is a commonly used metric; also consider F1 score, ROC measures, etc."
+,Gradient clipping and learning rate scheduler (part 1),part2_finetune_clipScheduler,113,"Gradient clipping involves scaling down, without fundamentally changing, the gradient magnitude. It slows and stabilizes learning.
+Learning rate schedulers are also designed to slow down and stabilize learning.
+Sometimes, going slower means going faster (fewer errors and better solutions)."
+,Gradient clipping and learning rate scheduler (part 2),part2_finetune_clipScheduler,114,"Gradient clipping involves scaling down, without fundamentally changing, the gradient magnitude. It slows and stabilizes learning.
+Learning rate schedulers are also designed to slow down and stabilize learning.
+Sometimes, going slower means going faster (fewer errors and better solutions)."
+,"CodeChallenge: Clip, freeze, and schedule BERT",part2_finetune_CCbertClipScheduler,115,"Each additional step of LLM training is straightforward, but together they can present and overwhelming number of choices and decisions.
+Consider your choices carefully, and be mindful that some choices (e.g., weight initializations) will impact other choices (e.g., gradient magnitudes)."
+,Saving and loading trained models,part2_finetune_saveAndLoadModels,116,"There are several ways to save and load models, depending on the environment and subsequent goals when re-importing."
+,BERT decides: Alice or Edgar?,part2_finetune_bertWhichAuthor,117,"Training language models to classify text is easy — and easier to evaluate compared to generative models.
+Data should be visualized and analyzed with as little manipulation as possible, but smoothing can help with interpretation."
+,CodeChallenge: Evolution of Alice and Edgar (part 1),part2_finetune_CCbertClassifiesAliceEdgar,118,"Some seemingly subjective evaluations can be made quantitative by using a separate trained classifier model.
+However, this approach can produce deceptive results and false confidence, e.g., AI-writing detectors."
+,CodeChallenge: Evolution of Alice and Edgar (part 2),part2_finetune_CCbertClassifiesAliceEdgar,119,"Some seemingly subjective evaluations can be made quantitative by using a separate trained classifier model.
+However, this approach can produce deceptive results and false confidence, e.g., AI-writing detectors."
+,Why fine-tune when you can use AGI?,-,120,"SOTA commercial models are powerful, but cannot be downloaded or fine-tuned.
+Customized fined-tuned models offer more flexibility and control, and are less resource-intensive.
+But useful customized models may still require considerable resources to train."
+Instruction tuning,Instruction tuning,-,121,"Instruction tuning is the same procedure as fine-tuning (which is the same as pretraining). The main difference is the style and content of the datasets.
+Instruction tuning is like training an “instruction manual” for how LLMs should interact with users, and constraints on their behaviors (e.g., not helping with illegal or immoral requests)."
+,Some datasets for instruction tuning,part2_instruct_datasets,122,"Instruction tuning datasets look like a desired chat.
+The LLM learns keywords and tags like “question” and “answer”, or “system” and “user”.
+The LLM learns to mimic the patterns in the training data, so if the training data look like a chat, the model will learn to chat."
+,Training a chatbot with system-user-assistant,-,123,"Yet again: Many ways of training LLMs looks the same: Predict the next token in a sequence.
+LLMs combine high-level patterns with detailed contextual and world-knowledge information.
+Many token snippets are excluded (“hidden”) from the user during chats.
+The system prompt is like an “instruction manual” that describes how the LLM can and should interact with users."
+,Instruction tuning with GPT2,part2_instruct_GPT2,124,"Training datasets for chatbots comprise human-written Q&A texts. The LLM learns to emulate the style and tone.
+Chatbots don’t “answer” the user; they simply continue the pattern they recognize in the input.
+Even GPT2-small can sound authoritative and encyclopedic; this has implications for AI safety."
+,CodeChallenge: Instruction tuning GPT2-large (part 1),part2_instruct_CCinstructingGPT2large,125,"LLMs train on such a large number of token sequences that imposing structure that helps us (humans) is not necessarily beneficial to the model.
+LLMs learn to recognize, mix, and complete patterns in sequences, regardless of where those sequences start or end.
+“Large” models are memory-intensive, not because of the models themselves, but because of all the intermediate activations matrices."
+,CodeChallenge: Instruction tuning GPT2-large (part 2),part2_instruct_CCinstructingGPT2large,126,"LLMs train on such a large number of token sequences that imposing structure that helps us (humans) is not necessarily beneficial to the model.
+LLMs learn to recognize, mix, and complete patterns in sequences, regardless of where those sequences start or end.
+“Large” models are memory-intensive, not because of the models themselves, but because of all the intermediate activations matrices."
+,Reinforcement learning from human feedback (RLHF),-,127,"RLHF is designed to align models to human values and human-like behavior, including helpfulness and truthfulness.
+RLHF is a complicated process that involves gathering a lot of data and training intermediate models.
+Despite its imperfections, RLHF works very well and is key to the success of modern chatbots."
+Part 3: Evaluating LLMs,,-,,
+Quantitative evaluations,Promises and challenges of quantitative evaluations,-,129,"Quantitative evals have the goal of assessing basic and advanced language capabilities and world-knowledge.
+Evals are useful and important, but all tests have limitations.
+Different methods target different skills or areas of knowledge, and it is useful to combine many tests.
+Eval methods can be short-lived because LLMs can be fine-tuned to perform well on specific tests."
+,Numerical issues in logits and softmax,part3_evals_numericalIssuesLogits,130,"Always check your intermediate and final results carefully, and be mindful of numerical issues.
+Simple normalizations are often sufficient.
+Many PyTorch functions internally safeguard against numerical issues, but confirm rather than assume."
+,Perplexity,part3_evals_perplexity,131,"Perplexity is a simple measure of token prediction that can be calculated without access to model internals (need only final output logits).
+The score is sensitive to analysis and dataset choices.
+Perplexity also provides insights into datasets and sequences, not only into models."
+,CodeChallenge: Perplexing perplexities,part3_evals_CCperplexities,132,"Token logits in pretrained models do not follow a uniform distribution.
+Perplexity values depend on many factors. When evaluating models using perplexity, match as many parameters as possible (e.g., text, sequence length, stride), and interpret relative (not absolute) perplexity values."
+,Masked word prediction accuracy,part3_evals_maskedPredictionsBERT,133,"Token prediction accuracy measures semantic and grammatical capabilities of LLMs.
+Categorically incorrect responses should be evaluated for relevance; the purpose of language is to express meaning, not specific tokens."
+,HellaSwag,part3_evals_hellaswag,134,"Sentence-level evaluations have advantages over token-level evals, including the ability to assess world knowledge and reasoning.
+All evaluation methods have advantages and limitations, because both LLMs and human language are complex, ambiguous, and noisy."
+,Import large models using bitsandbytes,part3_evals_bitsandbytes,135,"You can use the bitsandbytes library to import and use lightweight versions of large models.
+Training should be done on the max-precision models if possible."
+,CodeChallenge: HellaSwag evals in two models (part 1),part3_evals_CChellaModels,136,"The success of the attention mechanism has led to increasing varieties of the basic GPT architecture.
+There are many eval methods and none is perfect. It’s good to use several to compare and combine."
+,CodeChallenge: HellaSwag evals in two models (part 2),part3_evals_CChellaModels,137,"The success of the attention mechanism has led to increasing varieties of the basic GPT architecture.
+There are many eval methods and none is perfect. It’s good to use several to compare and combine."
+,KL (Kullback-Leibler) divergence,part3_evals_KLdivergence,138,"KL divergence is a measure of the distance between two probability distributions.
+It opens the door to text-level and discourse-level evaluations of global text qualities (c.f. local token-level text features)."
+,MAUVE,part3_evals_mauve,139,"The MAUVE score ranges between 0 and 1, and reflects how much LLM-generated text “looks like” (has similar distribution characteristics to) human-written text."
+,CodeChallenge: Large and small MAUVE explorations,part3_evals_CCmauveVariability,140,"A general statistical principle in science is to average multiple noisy measurements in hopes of more accurately assessing characteristics and capabilities.
+Aggregated measures still pose challenges, however, particularly in terms of getting a sufficient amount of appropriate model-product text."
+,SuperGLUE and other amalgamations,-,141,"That the diversity and imperfections of individual evaluation methods can be countered by aggregating results across many evals.
+That there are many aggregated LLM evaluation aggregations. Some are more general while others are targeted for specific knowledge domains."
+,Assessing bias and fairness,-,142,"LLMs can exhibit biases against certain groups.
+These biases can be trained out to some extent via RLHF or data relabeling.
+LLM biases are not formed “naturally,” but instead are learned from human text."
+,Non-technical benchmarks,-,143,"Statistical measures of task performance are useful, but there are many other ways to think about the impact of LLMs from commercial and culture perspectives."
+Qualitative evaluations,Black box evals,-,144,"Black box evaluations are important and have revealed many serious safety risks of LLMs.
+However, black box evals only identify existing issues that users happen to search for; they cannot predict potential risks or identify underlying mechanisms that create those risks."
+,Red-teaming,-,145,"“Red-teaming” refers to trained security experts using adversarial attacks to discover security, privacy, or safety risks.
+The advantages and limitations of red-teaming safety evaluations."
+,"Accuracy, coherence, and relevance",-,146,"Some qualities of language are subjective, yet are desired features of a language model.
+“Human-in-the-loop” evaluation can be high quality, but increases costs and can be more variable.
+LLMs can do “subjective evaluations,” but that risks low-quality training."
+,Distributions of hidden-state activations,part3_evals_variousVisualizations,147,"The internals of the models can be extracted and explored. This is key to mechanistic interpretability and technical AI safety.
+LLMs are sufficiently complex systems that having access to all the numbers (weights and activations) does not necessarily lead to understanding.
+Mechanistic interpretability is a nascent and exciting field in research and AI safety solutions."
+,Heatmaps of tokens for qualitative inspection,part3_evals_textHeatmaps,148,"Text heatmaps are compelling visualization tools that can facilitate understanding how LLM calculations relate to tokens.
+Text heatmaps suffer from several issues, including scaling, selection bias, non-representative examples, and overinterpretation. "
+,CodeChallenge: Visualize single-token predictions,part3_evals_CCheatmapTokenPredictions,149,"The final output logits of token N predict token N+1.
+Similarity of final outputs does not imply similarity of internal calculations and representations.
+Text heatmaps are fun to look at, and can be insightful."
+Part 4: Overview of AI safety and mechinterp,,,,
+AI safety,AI safety and alignment,-,151,"AI safety involves technical and legal measures to guide AI development towards maximal benefits with minimal risk.
+AI safety is increasingly important, yet receives relatively little funding and research attention.
+Aligning AI to human values raises deep philosophical, legal, cultural, and historical questions."
+,Why can't AI just be safe and moral?,-,152,"LLMs understand human morality and ethics as token sequence patterns, just like they understand how to write LinkedIn posts or any other pattern.
+LLMs can be misused by bad actors, or can act in immoral ways on their own.
+Moral decision-making may conflict with profit motives of AI development companies."
+,In-context and few-shot learning,-,153,"ICL is the remarkable ability for LLMs to learn and accurately perform novel tasks without adjusting weights or fine-tuning.
+ICL is a challenge for AI safety, because it is difficult to control for unsafe abilities that are not built into the model during training."
+,Scaling and AI safety,-,154,"Scaling laws describe the past but cannot guarantee the future.
+Future AI capabilities may vastly exceed current capabilities — or may be only marginally better.
+Many people have many motivations to hype future AI capabilities beyond what may be realistic."
+,Hands-on: Hack an AI to steal a password!,-,155,A fun little demo where you try to convince an LLM to give you a secret password.
+,How to get involved in AI safety,-,156,"AI safety is increasingly important, but lags far behind AI development.
+There are many formal and informal ways to get involved in AI safety, all of which start from understanding LLM architectures and mechanisms."
+Interpretability,"What is ""mech interp"" (mechanistic interpretability)?",-,157,"Mechanistic interpretability is the attempt to understand LLM mechanisms by reverse-engineering.
+It is a surprising difficult problem due to the enormity and complexity of the models, and the lack of ground truth verification.
+The field is new and struggles from reproducibility, concrete applications, and a reliance on empirical observations rather than theoretical foundations."
+,How does mech interp relate to AI safety?,-,158,"Mechanistic interpretability will lead to a more precise understanding of LLMs and AI.
+Improved interpretability could be beneficial and/or harmful for AI safety, depending on its success and impact on AI development."
+,Concepts and terms in mech interp,-,159,"Terminology is an important part of learning a new area of knowledge.
+Some terms and concepts are good to know in advance; others you learn on-the-fly."
+,Theoretical and empirical approaches in research and teaching,-,160,"Both theory and data analysis are crucial for development of LLM understanding and AI safety.
+This course is more focused on analysis methods, because they provide a solid and lasting foundation for LLMs and myriad other ML applications.
+If you want to contribute to the mechanistic interpretability field, you can learn theories and speculative interpretations in blogs and papers."
+,General criticisms of mechanistic interpretability ,-,161,"There are several valid criticisms of mechanistic interpretability.
+Criticisms should be embraced and taken as an opportunity to do better. The potential impact of mech interp is high, and literally everything that humans do can be criticized.
+On the other hand, avenues of research that are clearly ineffective or non-reproducible should be learned from and left behind."
+Part 5: Observation (non-causal) mech interp,,,,
+Investigating token embeddings (part 1),CodeChallenge: Cosine similarity (advanced) (part 1),part5_embeddings_CCcosineSimilarity,163,"Pytorch functions take some getting used to…
+Cosine similarity matrices are compact representations of pairwise linear interactions. They can be used in bivariate and multivariate analyses (e.g., pattern analysis, clustering, SVD)."
+,CodeChallenge: Cosine similarity (advanced) (part 2),part5_embeddings_CCcosineSimilarity,164,"Pytorch functions take some getting used to…
+Cosine similarity matrices are compact representations of pairwise linear interactions. They can be used in bivariate and multivariate analyses (e.g., pattern analysis, clustering, SVD)."
+,CodeChallenge: Cosine similarity in word sequences,part5_embeddings_CCsequentialCosines,165,"Studying relationships in embeddings matrices can be interesting and thought-provoking, but static embeddings cannot capture the re-interpretations of words that is necessary for realistic communication."
+,CodeChallenge: Coloring cosine similarity,part5_embeddings_CCheatmapsCossim,166,"Tokens that convey less contextual or semantic meaning tend to have shorter embeddings vectors. Shorter vectors are less impactful in dot product calculations.
+Embeddings and cosine similarity can be used in many ways to reveal the structure of language (as it appears in the training set)."
+,CodeChallenge: Can random embeddings be interpreted?,part5_embeddings_CCinterpRandomEmbeds,167,"Interpreting patterns in noise is dangerously easy. Generalizing from patterns in small datasets is one of the most important functions of the nervous system…
+Be cautious about interpreting findings in complex systems, especially when using small datasets and without proper statistical validation."
+,T-SNE projection and DBSCAN clustering (theory),-,168,"T-SNE and clustering can be insightful methods to group and characterize high-dimensional data.
+Both methods are sensitive to parameter choices.
+There are several dimension-reduction and clustering methods; it’s a good idea to test several. Don’t rely on one run from one method with one parameter setting."
+,T-SNE projection and DBSCAN clustering (Python),part5_embeddings_TSNEclust,169,"T-SNE and clustering can be insightful methods to group and characterize high-dimensional data.
+Both methods are sensitive to parameter choices.
+There are several dimension-reduction and clustering methods; it’s a good idea to test several. Don’t rely on one run from one method with one parameter setting."
+,"CodeChallenge: cluster the ""x"" terms",part5_embeddings_CCtSNE,170,"Selecting internal model representations by linguistic category or feature is easy and can be interesting.
+Always inspect dimension-reduction and clustering results carefully before interpretations.
+DBSCAN can be very to parameter settings, and it is often difficult to know what to set the parameters to."
+,"CodeChallenge: Tokenize, embed, and cluster happy emojis",part5_embeddings_CCemoji,171,"Emojis are multitoken characters, and have embeddings just like any other token.
+Multitoken words bring ambiguity: Is averaging their component token embeddings valid?
+If analysis results seem puzzling or wrong, it is possible that our assumptions are wrong."
+,RSA (representational similarity analysis),part5_embeddings_RSA,172,"RSA allows you to compare representations of tokens in different models, layers, or measurements (e.g., LLM vs. human brain).
+There are many variants and extensions of RSA for specific data types or hypotheses.
+The results of an RSA are limited to the items (e.g., token embeddings) used in the analysis."
+,CodeChallenge: Compare embeddings with RSA (part 1),part5_embeddings_CCembeddingsRSA,173,"Your toolkit of analysis methods is growing :)
+More dimensions seems to be beneficial for increasing category selectivity of word embeddings (based on our small sample)."
+,CodeChallenge: Compare embeddings with RSA (part 2),part5_embeddings_CCembeddingsRSA,174,"Your toolkit of analysis methods is growing :)
+More dimensions seems to be beneficial for increasing category selectivity of word embeddings (based on our small sample)."
+,CodeChallenge: Word2vec vs. GPT2,part5_embeddings_CCword2vecVsGpt2,175,"Cosine similarity is sensitive to mean offsets, which is a desired feature in some situations but can be a confound in other situations.
+RSA indicates that relative word embeddings seem reasonably consistent in word2vec and GPT2.
+"
+,CodeChallenge: Graph representation of cosine similarities,part5_embeddings_CCgraphs,176,"Similarity metrics can be visualized in multiple ways.
+Some visualization methods look nice but are not very insightful.
+Many graphs can be created without libraries. Writing your own code can be elucidating but not necessarily advantageous."
+,Embeddings arithmetic and analogies,part5_embeddings_analogyVectors,177,"Embeddings vectors are just vectors; any geometric or linear-algebra operation can be implemented.
+“Semantic axes” based on vector arithmetic is compelling and simple, and seems to work in isolated cases (see also next two videos).
+Assuming linearity can help with analyses and interpretations, but risks misinterpretation."
+,CodeChallenge: soft-coded analogies in word2vec,part5_embeddings_CC300softAnalogies,178,"Language models are fun to work with ;)
+Differences in training between word2vec and GloVe.
+Analogy vectors created from simple arithmetic do capture meaningful semantic relationships."
+,"Creating and interpreting linear ""semantic axes""",part5_embeddings_semanticAxesNorm,179,"Normalization, regularization, selection, and other (often post-hoc) techniques are often necessary to get satisfactory results.
+Adding, subtracting, and scaling (normalizing) embeddings vectors is how the transformer attention mechanism works!"
+,kNN for synonym-searching in BERT,part5_embeddings_knnBERT,180,"kNN (k-nearest neighbor) is a simple and versatile algorithm that can be used for classification or nuclear sampling.
+There are many measures of distance (similarity); some are comparable while others are not.
+BERT embeddings seem to allow for distance-based synonyms.
+"
+,CodeChallenge: BERT v GPT kNN kompetition,part5_embeddings_CCknnBertGPT,181,"Many analyses in machine-learning and linear algebra can be applied to many types of data and for many hypotheses and explorations.
+Spacing in tokens and normalizations can have a significant impact on results of analyses based on vector calculations (distance, similarity, correlation)."
+,Research on translating embeddings spaces,-,182,"There is active and ongoing research on translating between embeddings vectors in different models.
+There are both conceptual and statistical challenges, and successful translations is not guaranteed.
+If successful, it would imply some underlying universal space of language representation."
+,Singular value spectrum of embeddings submatrices,part5_embeddings_SVDspectrum,183,"SVD is an advanced matrix decomposition that can be very insightful (e.g., PCA) but also requires more linear algebra background to fully appreciate.
+SVD can be used to identify “semantic basis vectors” of a submatrix of embeddings for related tokens.
+SVD linearly rotates the embeddings subspace; the basis vectors will be interpretable only if the data have structure to identify.
+SVD is like a “data-informed weighted average” and should perform better than a simple vector average."
+,CodeChallenge: SVD projections of related embeddings,part5_embeddings_CCSVDprojections,184,"SVD, like all other analyses of complex data, can be insightful or confusing (or both), and often raises more questions than answers.
+LLM embeddings matrices are designed to be starting-points for subsequent modifications, so these analyses are likely to be more insightful when applied to internal and/or final model calculations."
+Investigating neurons and dimensions,Activation maximization via gradient ascent (theory),-,185,"Activation maximization is a technique to discover features that activate individual neurons in a DL model.
+It is built on questionable assumptions, but seems to work for vision models.
+LLMs may violate the assumptions too strongly to provide meaningful insights into LLM mechanisms."
+,Activation maximization (code),part5_neurons_activationMaximization,186,"If you can specify a loss function, you can optimize it using gradient descent.
+Some interpretability method that have proven insightful for some model architectures (e.g., CNNs) may not be useful for other architectures (e.g., LLMs).
+Even techniques that fail to reveal mechanisms provide important insights and increase “forensic” and coding skills."
+,Activation maximization via data sampling,part5_neurons_actMaxSampling,187,"Data sampling for activation maximization is conceptually simple and likely to be interpretable.
+It has been used in computer vision models to understand how image features like color, shape, and category are represented.
+Scaling issues and context-dependency makes this method less promising for LLMs, especially without clear hypotheses to minimize the search space."
+,CodeChallenge: Reproducibility of activation maximization,part5_neurons_CCactMaxRepeat,188,"Individual dimensions in an LLM don’t seem to be “tuned” to specific tokens.
+Although we haven’t ruled out that this happens at a finer resolution (e.g., inside attention or MLP), lack of single-unit specificity is a common finding in DL.
+This is consistent with the very large vocab and pretraining procedure (e.g., dropout, weight decay)."
+,"Extracting activations using ""hooks""",part5_neurons_PytorchHook,189,"“Hooks” are functions you can implant into a PyTorch model, that allow you to access its activations during a forward pass.
+Hooks can slow performance, and so should be used only when accessing internals; they can be removed during inference or when not needed."
+,Relation between hooks and output.hidden_states,part5_neurons_hookVsHiddenStates,190,"The “hidden states” provided by HuggingFace are the final outputs of each transformer block, which can be reconstructed as the previous plus the attention and MLP adjustments.
+Embeddings vectors pass through the LLM, and are adjusted by each transformer layer. Hooks allow you to access all the adjustments."
+,Clarification of final hidden_states output,part5_neurons_hookVsFinalHS,191,"The final hidden_states layer is the final transformer block pushed through the final layer-norm transformation. For this reason, the final hidden_states layer may show different patterns of activity compared to earlier hidden_states."
+,CodeChallenge: Grammar tuning in MLP neurons? (part 1),part5_neurons_CCtuningNeo,192,"Identifying category-specific neurons is challenging, due to context-dependency of token processing.
+Always confirm findings in out-of-sample datasets."
+,CodeChallenge: Grammar tuning in MLP neurons? (part 2),part5_neurons_CCtuningNeo,193,"Identifying category-specific neurons is challenging, due to context-dependency of token processing.
+Always confirm findings in out-of-sample datasets."
+,CodeChallenge: Context-modulated activation in MLP,part5_neurons_CCcontextComplexities,194,"LLM activations are highly context-dependent, which poses a challenge That internal activations depend on spaces in words (because those correspond to different tokens).
+The differences between single-token and in-context token processing.
+Why context is a crucial challenge in mech interp research."
+,CodeChallenge: Activation histograms by token length (part 1),part5_neurons_CCactivationByLength,195,"Processing in early transformer blocks is more closely related to “superficial” token features, such as length.
+Repeating analyses over layers can be insightful.
+Even in coarse-grained analyses, larger models do not necessarily behave like smaller models, which means the universality assumption needs to be carefully checked before being used in interpretation."
+,CodeChallenge: Activation histograms by token length (part 2),part5_neurons_CCactivationByLength,196,"Processing in early transformer blocks is more closely related to “superficial” token features, such as length.
+Repeating analyses over layers can be insightful.
+Even in coarse-grained analyses, larger models do not necessarily behave like smaller models, which means the universality assumption needs to be carefully checked before being used in interpretation."
+,CodeChallenge: Activation histograms by token length (part 3),part5_neurons_CCactivationByLength,197,"Processing in early transformer blocks is more closely related to “superficial” token features, such as length.
+Repeating analyses over layers can be insightful.
+Even in coarse-grained analyses, larger models do not necessarily behave like smaller models, which means the universality assumption needs to be carefully checked before being used in interpretation."
+,Dealing with multitoken word embeddings,part5_neurons_multitokenWords,198,"For multitoken target words, analyze the final token in the word.
+The first token of a multitoken word contains no information about the rest of the tokens, whereas the final token is modulated by all previous tokens.
+Identifying the final token position in a sequence can be tricky. Check your code for accuracy!"
+,CodeChallenge: Category-tuned MLP projections (part 1),part5_neurons_CCmultiTokenTtests,199,"Multitoken words require additional considerations; taking the final token is generally the best approach.
+The multitude of category-tuned neurons implies distributed circuits of representations.
+Confirming results in unseen (test) data is generally easier in LLMs compared to other domains, and should be done in research."
+,CodeChallenge: Category-tuned MLP projections (part 2),part5_neurons_CCmultiTokenTtests,200,"Multitoken words require additional considerations; taking the final token is generally the best approach.
+The multitude of category-tuned neurons implies distributed circuits of representations.
+Confirming results in unseen (test) data is generally easier in LLMs compared to other domains, and should be done in research."
+,Classification via logistic regression: theory and code,part5_neurons_logisticRegression,201,"Logistic regression allows you to predict a binary category label using data such as activation values.
+Logistic regression is a cornerstone analysis in machine-learning, including mechanistic interpretability.
+Logistic regression can be implemented in several libraries including PyTorch (using gradient descent), although statsmodels provides the most information."
+,Logistic regression vs. t-test: assumptions and applications,part5_neurons_logregTtest,202,"T-tests and logistic regressions can provide similar results, but are based on different assumptions and formulas.
+Use a t-test to compare two groups, and a logistic regression to make single-sample predictions about category labels.
+Data simulations and visualizations are powerful tools to understand statistics and machine-learning analyses."
+,Proper noun tuning in GPT2-medium,part5_neurons_classifyProperNouns,203,"Logistic regression is a common tool in mechanistic interpretability to identifying “tuning” in neurons, circuits, and dimensions.
+Multi-dimensional visualizations can help interpret and contextualize results — and identify problems or subsequent analyses.
+Whenever possible, confirm findings in new samples to avoid improperly interpreting overfitting."
+,CodeChallenge: Negation tuning in MLP neurons (part 1),part5_neurons_CCclassifyNegationsMLP,204,"How to identify words in categories.
+How to run mass-univariate classification analyses using logistic regression.
+More ways of creating hooks.
+That numbers (statistical results) don’t tell the whole story — multiple forms of visualization are necessary for proper interpretation."
+,CodeChallenge: Negation tuning in MLP neurons (part 2),part5_neurons_CCclassifyNegationsMLP,205,"How to identify words in categories.
+How to run mass-univariate classification analyses using logistic regression.
+More ways of creating hooks.
+That numbers (statistical results) don’t tell the whole story — multiple forms of visualization are necessary for proper interpretation."
+,CodeChallenge: Negation tuning in MLP neurons (part 3),part5_neurons_CCclassifyNegationsMLP,206,"How to identify words in categories.
+How to run mass-univariate classification analyses using logistic regression.
+More ways of creating hooks.
+That numbers (statistical results) don’t tell the whole story — multiple forms of visualization are necessary for proper interpretation."
+,CodeChallenge: Negation tuning in QVK neurons,part5_neurons_CCclassifyNegationsQKV,207,"Taking the time to understand code is a wise investment, because you will likely reuse the same code many times.
+Summary statistics and relations to token types are often similar in QVK and MLP neurons."
+Investigating layers,"Token-related similarities within and across Q, K, V matrices (part 1)",part5_layer_cossimsQKV,208,"Cosine similarity and correlation coefficient can give very different results, depending on mean offsets.
+There are lots of curious patterns inside LLMs! Keep a curious and courageous attitude when exploring DL models.
+Q and K vectors tend to be more similar, and V tends to be more distinct. That’s consistent with their computational organization in the attention algorithm."
+,"Token-related similarities within and across Q, K, V matrices (part 2)",part5_layer_cossimsQKV,209,"Cosine similarity and correlation coefficient can give very different results, depending on mean offsets.
+There are lots of curious patterns inside LLMs! Keep a curious and courageous attitude when exploring DL models.
+Q and K vectors tend to be more similar, and V tends to be more distinct. That’s consistent with their computational organization in the attention algorithm."
+,CodeChallenge: Token-related similarities across layers,part5_layer_CCcossimsQKVlayers,210,"Coarse-grained analyses can facilitate a “holistic” understanding of LLMs, but are less able amenable to targeted insights and hypothesis-testing.
+Token embeddings vectors transition from the current token to a prediction about the next token, as it passes through the LLM.
+Multiple visualizations can yield different insights."
+,Grouping and RSA in Q and K matrices,part5_layer_semanticGroupsRSA,211,"RSA is a useful analysis for comparing similarities of token embeddings across matrices or layers.
+Query vectors represent the current token (here, different in each sequence) while key vectors represent contextual tokens (here, identical in each sequence)."
+,CodeChallenge: Laminar profile of RSA and category selectivity,part5_layer_CClayerGroupingRSA,212,"Token selectivity varies by attention matrix and layer.
+Different analyses of the same data (e.g., RSA vs. selectivity) can identify different patterns and reveal distinct insights."
+,"""Effective dimensionality"" analysis with PCA",part5_layer_effectiveDimensionality,213,"“Effective dimensionality” is a versatile and generic analysis method that can be applied to many multivariate datasets.
+Dimensionality provides insights into the complexity of the processing, because more complex calculations require more dimensions.
+“Linear” must be interpreted cautiously in DL, because all linear interactions take place between a multitude of nonlinear transformations."
+,CodeChallenge: Dimensionalities in Pythia 2.3B,part5_layer_CCdimensionalityPythia,214,"Effective dimensionality fluctuates over layers, as the models need more or less complex representations.
+Many analyses in LLMs can give very different results when different texts are used. This needs to be carefully considered in mech interp research.
+Deeper insights can be obtained in follow-up research to determine the “width” of the dimensions, and the nature of the calculations in those dimensions."
+,Mutual information: theory and code,part5_layer_mutualInformation,215,"Mutual information is a non-negative measure that quantifies statistical dependencies between two data sources.
+The mutual information value on its own does not distinguish between linear vs. non-linear dependencies, or between positive vs. negative relationships.
+Mutual information is easy to implement in Python, but can be slow for many interaction pairs."
+,Pairwise mutual information through the LLM,part5_layer_MIhiddenStates,216,"Mutual information can be easily integrated into a mechanistic interpretability analysis pipeline.
+The parameter-sensitivity of MI means that relative values are more safely interpreted.
+MI over tokens per dimension-pair is not necessarily the best approach for practical and interpretational reasons."
+,Mutual information vs. covariance,part5_layer_MIvsCovariance,217,"Mutual information and covariance are related but distinct measures of bivariate dependencies.
+Covariance is often preferred because it is the basis for many additional analyses including PCA, dimensional analysis, and clustering.
+MI can be used when the relationships are nonlinear or the sign won’t be interpreted.
+Translating the math into code introduces biases and risks numerical issues, but the bias is constant and it’s faster than Sklearn’s version."
+,CodeChallenge: Attention to coffee: MI and token distances (part 1),part5_layer_CCMIcoffee,218,"Token-pair-based MI is faster and more interpretable, and addresses some statistical issues like sample sizes.
+Extreme activation values may be important for internal calculations, but create statistical estimation problems in MI and many other analyses.
+MI is higher in early MLP layers and higher in later attention layers, reflecting a “passing off” of context-based processing.
+Tokens further apart in the text generally have less common context, and therefore lower MI."
+,CodeChallenge: Attention to coffee: MI and token distances (part 2),part5_layer_CCMIcoffee,219,"Token-pair-based MI is faster and more interpretable, and addresses some statistical issues like sample sizes.
+Extreme activation values may be important for internal calculations, but create statistical estimation problems in MI and many other analyses.
+MI is higher in early MLP layers and higher in later attention layers, reflecting a “passing off” of context-based processing.
+Tokens further apart in the text generally have less common context, and therefore lower MI."
+,CodeChallenge: Clusters in internal vs. terminal punctuation (part 1),part5_layer_CCpunctuationMI,220,"Well-done data science asks more questions than it answers ;)
+Covariance and mutual information can give qualitatively different results and lead to different insights.
+The MI calculation removes the scale of the data while covariance preserves scale. Covariances should be normalized (i.e., Pearson correlation) if comparisons are made across variables with different variances."
+,CodeChallenge: Clusters in internal vs. terminal punctuation (part 2),part5_layer_CCpunctuationMI,221,"Well-done data science asks more questions than it answers ;)
+Covariance and mutual information can give qualitatively different results and lead to different insights.
+The MI calculation removes the scale of the data while covariance preserves scale. Covariances should be normalized (i.e., Pearson correlation) if comparisons are made across variables with different variances."
+,The Logit Lens,part5_layer_logitlens,222,"The Logit Lens analysis involves examining the predicted token from each transformer layer output.
+It can be used to explore how LLMs transition from the current to the subsequent token.
+Even when the prediction is categorically incorrect, the prediction can be context-appropriate.
+There are several additional metrics that can be extracted and visualized, including token rank and KL divergence."
+,CodeChallenge: Logit Lens in BERT (part 1),part5_layer_CClogitBertZ,223,"Analyses often need minor modifications for different models with different architectures or naming conventions.
+Transitions into the final token can be sudden, indicating a sharp “phase transition” in internal processing.
+The Logit Lens approach can be adapted to other internal calculations and metrics. Check the original post for more ideas and applications."
+,CodeChallenge: Logit Lens in BERT (part 2),part5_layer_CClogitBertZ,224,"Analyses often need minor modifications for different models with different architectures or naming conventions.
+Transitions into the final token can be sudden, indicating a sharp “phase transition” in internal processing.
+The Logit Lens approach can be adapted to other internal calculations and metrics. Check the original post for more ideas and applications."
+Investigating token embeddings (part 2),Calculating rotations of embeddings vectors,part5_token_embeddingsAngleChange,225,"Many concepts in linear algebra and geometry can be useful in mechanistic interpretability. The field of mech interp is still young and there is room for growth!
+Random pairs of embeddings vectors tend to be roughly orthogonal.
+Various features and metrics suggest smooth or discontinuous changes across the transformer blocks. How these all fit together remains a major challenge."
+,CodeChallenge: Laminar evolution of sequential angular adjustments,part5_token_CCpairwiseAngles,226,"Angle changes between tokens are less interpretable than changes of the same token across layers.
+When you see a curious or unexpected finding, check for coding bugs or data issues, then investigate by separating the data and lots of visualizations!
+LLMs take a few tokens to “load in” a context. Therefore, the first few tokens should not be interpreted in analyses."
+,Path length and logit token prediction,part5_token_pathlengthLogits,227,"Path length is an interesting metric that provides insights into how much the embeddings vectors change through the model.
+Generalization can be difficult in LLMs. Universality is not guaranteed, and should not be assumed."
+,CodeChallenge: Residual stream decomposition of path lengths  (part 1),part5_token_CCpathlengthDecomposition,228,"Attention and MLP subblock adjustments are largely orthogonal. They provide unique information to adjusting the token embeddings vectors.
+Both contribute to the embeddings adjustments, although MLP makes a stronger contribution (somewhat tautological).
+The first token in a sequence “loads in” the context, and behaves differently from all subsequent tokens."
+,CodeChallenge: Residual stream decomposition of path lengths  (part 2),part5_token_CCpathlengthDecomposition,229,"Attention and MLP subblock adjustments are largely orthogonal. They provide unique information to adjusting the token embeddings vectors.
+Both contribute to the embeddings adjustments, although MLP makes a stronger contribution (somewhat tautological).
+The first token in a sequence “loads in” the context, and behaves differently from all subsequent tokens."
+,State-space trajectories through embedding space,part5_token_trajectories,230,"High-dimensional vectors can be visualized and quantified using low-dimensional projections.
+PCA projections are fast, linear, and reproducible, and based on the assumption “variance = relevance.” Other compression methods (e.g., tSNE) might be useful.
+State-space trajectories can reveal dynamics and differences that might be otherwise obscured."
+,Parts of speech with SpaCy library,part5_token_SpaCy,231,"The SpaCy library is fast and easy to use to detect part of speech (and many other applications).
+Some text processing is necessary when categorizing POS from LLM-tokenized text.
+Using SpaCy for POS identification in LLM mech interp may require additional considerations due to discrepancies between tokenizers."
+,CodeChallenge: Do nouns or adjectives have longer trajectories? (part 1),part5_token_CCadjNounTrajectories,232,"POS can be challenging to identify at scale (minimal human oversight) with different tokenizers.
+Nouns tend to require longer-range contextual dependencies to interpret, whereas adjectives provide local context to neighboring words."
+,CodeChallenge: Do nouns or adjectives have longer trajectories? (part 2),part5_token_CCadjNounTrajectories,233,"POS can be challenging to identify at scale (minimal human oversight) with different tokenizers.
+Nouns tend to require longer-range contextual dependencies to interpret, whereas adjectives provide local context to neighboring words."
+Identifying circuits and components,"What is a ""circuit"" in a DL model?",-,234,"There is no single widely agreed-upon definition of a “circuit” in complex systems.
+Working definitions allow for organizing data investigation techniques, but should not be interpreted too restrictively."
+,Isolating and investigating attention heads,part5_circuits_attentionHeads,235,"Attention is highly selective; selectivity is created by having many negative attention scores.
+Isolating and studying LLM components (e.g., attention heads) opens doors for insights and additional analyses.
+KDE is a useful technique for estimating smooth pdf’s from sparse data, with applications in ML, signal processing, finance, Gaussian/stochastic processes."
+,CodeChallenge: Laminar profile of attention head weights,part5_circuits_CCattentionDists,236,"Attention weights tend to be sparse, with most token pairs having low attention weights and few large weights.
+More token pairs have higher attention weights towards later layers, as the model transitions to its final token predictions.
+KDE is a non-parametric frequency estimator with many applications in many domains, and facilitates clear data visualization."
+,Are circuits clustered in low-dimensional space?,part5_circuits_clustering,237,"Alexander Graham Bell: ""there are no unsuccessful experiments; every experiment contains a lesson.""
+Research and theory development require knowing what works and what doesn’t work.
+Dimension compression and clustering methods are useful for many analyses."
+,Sparse probing: theory and code,part5_circuits_sparseLinearProbing,238,"Sparse probing is an interesting statistical approach to a small number of variables that predict a label.
+There are several issues with logistic regression in large datasets with strong inter-variable correlations (multicollinearity); see next video.
+Sparse probing is probably best done with a small subset of neurons."
+,Challenges with sparse logistic regression in large datasets,part5_circuits_logisticRegressionChallenges,239,"Sparse logistic regression predicts labels; redundant information across variables may be suppressed even if those variables are individually meaningfully.
+Selecting a smaller number of variables for the analysis can ameliorate the situation, but data selection can also introduce biases and other limitations."
+,"""Latent"" vs. ""manifest"" variables",-,240,"Latent variables are often the most important to understand, yet cannot be directly observed.
+Manifest variables can be combined in many ways to estimate latent factors.
+Latent estimation is statistical and therefore involves uncertainty. Ground truth can be difficult or impossible to verify."
+,Sparse autoencoders: theory and code,part5_circuits_SAEdemo,241,"Autoencoders are nonlinear compression methods that can find patterns distributed across manifest variables.
+Interpreting autoencoder results can be challenging without ground truth, careful experiments with good controls, and statistical confirmations.
+Simulating data is an effective way to explore the accuracy and robustness of analysis methods, because they provide ground-truth comparisons and ability to manipulate noise, sample size, and other parameters."
+,SAE in GPT2 learns about Hungarian Palinka,part5_circuits_SAEinGPT2,242,"Autoencoders are a powerful architecture in DL, with applications in compression, denoising, computer vision — and interpretability.
+Choosing a latent component for interpretation is challenging, because there are so many and they are not intrinsically sortable (cf PCA). Quantitative analyses and test datasets are necessary."
+,CodeChallenge: Laminar profile of autoencoder sparsity,part5_circuits_CCSAElaminarProfile,243,"Laminar profiles of coarse-grained characteristics can be insightful, and complement in-depth analyses.
+Activation density increases with transformer layer, indicating increasing complexity and distributed representations, consistent with dimensionality analyses.
+Sparse autoencoders can be sensitive to parameter settings."
+,Non-orthogonal latent components via eigendecomposition (theory and demo),part5_circuits_GEDdemo,244,"Generalized eigendecomposition is a powerful and method for revealing subtle patterns embedded in multivariate data. It is used in signal processing, neuroscience, and machine-learning (e.g., Fisher discriminant analysis).
+The application of GED to LLM data require additional considerations, but can lead to network discovery and novel insights."
+,"Generalized eigendecomposition separates ""him"" from ""her"" in MLP",part5_circuits_GEDinGPT,245,"GED is a powerful and targeted method to identify latent components (weighted combinations of neurons) in data with distributed representations.
+Some considerations are required for very large datasets, such as preselection or PCA-compression.
+GED risks overfitting training data; additional statistical confirmations are necessary."
+,CodeChallenge: GED for category isolation across layers (part 1),part5_circuits_CClaminarOutOfSampleGED,246,"Analyzing complex systems can be tricky; take it one step at a time.
+GED is a powerful, flexible, and targeted method of identifying patterns embedded in multidimensional datasets.
+Some results (e.g., effective dimensionality) emerge from other analyses, and provide opportunities for replication, extension, and linking to other literatures."
+,CodeChallenge: GED for category isolation across layers (part 2),part5_circuits_CClaminarOutOfSampleGED,247,"Analyzing complex systems can be tricky; take it one step at a time.
+GED is a powerful, flexible, and targeted method of identifying patterns embedded in multidimensional datasets.
+Some results (e.g., effective dimensionality) emerge from other analyses, and provide opportunities for replication, extension, and linking to other literatures."
+Part 6: Intervention (causal) mech interp,,,,
+How to modify activations,Introduction to causal mech interp,-,249,"Causal mechanistic interpretability involves altering model activations during inference or training.
+It can be used to replace activations with another value or add noise, and evaluate counterfactuals (how the model would have behaved if the internals were different).
+There are so ways to manipulate and measure activation patterns; having clear hypotheses is helpful.
+Null effects in causality experiments can be difficult to interpret, because of distributed representations and compensation."
+,Activation editing: Code implementations,part6_how2modify_activationManipulation,250,"Manipulating model activations is easy and only a minor change from measuring activations.
+Some care needs to be taken to ensure code accuracy.
+Incorporating print statements and other sanity-checks during development is recommended."
+,"CodeChallenge: replacing attention, MLP, and hidden states",part6_how2modify_CCchangingActivations,251,"Always visualize, print, and anything else to sanity-check that your code works as intended, before using it for research.
+Different layers of the model require different code approaches because variable types can differ.
+Changing activations in one layer impacts later layers, which can impact the final model output."
+Editing hidden states,Downstream impact of early layer scaling,part6_hiddenStates_scalingImpact,252,"Hooking is fun :D
+The activations without any interference can be used as comparisons for qualitative and quantitative evaluations of causal interventions.
+Early modifications can have compounding impacts on downstream layers, though they are somewhat corrected for in the final transformer block."
+,CodeChallenge: Hidden-state scaling and token loss,part6_hiddenStates_CCscalingTargetLoss,253,"Having the unedited internal activations provides a baseline reference to evaluate the impact of manipulations.
+Interpreting model output behavior (token selection) has high application value and validity, and should complement more detailed circuit-level analyses.
+Global scaling has minimal impact on next-token prediction, and can make the model less variable (akin to temperature in softmax)."
+,CodeChallenge: Noisy and shuffled BERT predictions,part6_hiddenStates_CCbertNoisyPredictions,254,"Randomly shuffling dimensions is catastrophic to model performance.
+Noisifying activations reduces their fidelity and increases stochasticity (token selection uncertainty).
+Added noise from a different distribution might be valid. The signal vs. noise characteristics of LLM activations are not fully understood."
+,CodeChallenge: Measure and correct BERT's bias,part6_hiddenStates_CCbertBiases,255,"Complex systems like LLMs are easy to adjust in specific examples, but difficult to adjust for all possible examples (including generative text that doesn’t yet exist).
+Averaging embeddings vectors assumes linearity, but internal representations might be nonlinear — and the geometry might be layer-specific.
+The success of linear mixing does imply that linear approximations are valid and useful."
+,Activation patching with indirect object identification,part6_hiddenStates_patchingIOI,256,"“Activation patching” involves replacing activations from one sequence with those from another.
+The indirect object identification test assesses a model’s ability to “copy” grammatical and direct-object information into a next-token prediction.
+IOI results reveal a sudden transition in context processing around halfway through the model."
+,Skip a layer,part6_hiddenStates_skipAlayer,257,"The input into transformer block t is the output of block t-1. You can replace the output with the input to skip an entire transformer layer.
+This is a rather crude manipulation that is unlikely to reveal detailed insights, but does help understand the mechanics of working with hook functions."
+Interfering with attention ,Head ablation and token prediction,part6_attention_ablateHeadTokenPrediction,258,"Yet again: manipulating LLM dynamics (here, layer-specific attention head activations) during inference is easy.
+The target logits were suppressed, although the model still produced the categorically correct answer. In a complex, stochastic system, categorical accuracy may be too insensitive to be the sole metric.
+Replacing an entire head with zeros may seem like it is out-of-distribution, but that needs to be empirically evaluated."
+,CodeChallenge: Token prediction after head ablations (part 1),part6_attention_CCtokenPredictionHeads,259,"There are many terms for the action of changing an activation value during forward pass (e.g., ablate, edit, impute, intervene, replace). Terminology tends to settle as fields mature and develop.
+Small changes in manipulations (e.g., replacing with zeros vs. mean) can have inconsequential or significant downstream impacts. Such “deterministic chaos” is a hallmark of complex systems."
+,CodeChallenge: Token prediction after head ablations (part 2),part6_attention_CCtokenPredictionHeads,260,"There are many terms for the action of changing an activation value during forward pass (e.g., ablate, edit, impute, intervene, replace). Terminology tends to settle as fields mature and develop.
+Small changes in manipulations (e.g., replacing with zeros vs. mean) can have inconsequential or significant downstream impacts. Such “deterministic chaos” is a hallmark of complex systems."
+,Impact of head-silencing on cosine similarity,part6_attention_silencingCosineSimilarity,261,"Attention adjustments can have complicated downstream impacts at multiple scales of LLM calculations and representations.
+Deeper insights into LLM mechanisms will come from incorporating multiple measurements into research."
+,CodeChallenge: Does GPT2 like pineapple pizza?,part6_attention_CCpineapplePizza,262,Causal mechanistic interpretability research can be extremely precise and detailed. It’s a good idea to start with hypotheses to help guide your manipulations and measurements.
+,Attention head patching in IOI,part6_attention_IOI,263,"You can create and remove hooks on the fly as needed, not only when importing the model.
+The IOI experiment is amenable to precise manipulations, including combinations of manipulations at different scales and locations of the model.
+Attention heads provide only a minor adjustment to the embeddings vectors, and therefore their contribution to complex language tasks is important but subtle."
+,CodeChallenge: Head and token patching in IOI,part6_attention_CCperHeadIOI,264,"Hooks can be created, implanted, and removed anywhere in the experiment. Let your hypothesis and experiment design guide the best coding strategy, not the other way around.
+The more targeted the manipulation, the smaller the effect is likely to be. Make sure to have enough data (100s or 1000s of samples) to perform statistics and be confident about the results."
+Modifying MLP,Successive median-replacement of MLP neurons,part6_mlp_replacement,265,"The MLP expansion layer is very high-dimensional; statistical strategies are necessary to avoid dimensional-explosion problems.
+The similarity between 10% vs. 90% replacement suggests that only a few high-activation neurons carry a lot of information."
+,Statistics-based lesioning MLP neurons,part6_mlp_ttest2ablateMLP,266,"Using independent tests to select model features (neurons or dimensions) to manipulate is a useful way to deal with the “dimensionality explosion” problem.
+Hook functions are versatile and can incorporate analyses — but keep in mind that complicated analyses will slow down the forward pass."
+,CodeChallenge: Laminar profile of MLP t-lesions,part6_mlp_CCstatsMLPlaminar,267,"Using independent data to select neurons (or other model components) for manipulation can help prevent biased results.
+Having good hypotheses, a controlled experiment, and targeted analyses does not guarantee positive results, especially with small sample sizes."
+,Explorations in subspace removal,part6_mlp_removeSubspace,268,
+Part 7: Python tutorial,,,,
+Python intro: Colab and notebooks,"Creating, working with, and saving Colab notebooks",-,270,
+Python intro: Data types,Arithmetic and comments,datatypes,271,
+,Variables,datatypes,272,
+,Lists,datatypes,273,
+,Booleans,datatypes,274,
+,Dictionaries,datatypes,275,
+Python intro: Indexing and slicing,Indexing,indexSlice,276,
+,Slicing,indexSlice,277,
+Python intro: Functions,Inputs and outputs,functions,278,
+,The numpy library,functions,279,
+,Getting help on functions,functions,280,
+,Creating functions,functions,281,
+,Copying (duplicating) variables,functions,282,
+,Generating random numbers,functions,283,
+Python intro: Flow control,For loops,flowControl,284,
+,If-else statements,flowControl,285,
+,List comprehension (single-line loops),flowControl,286,
+,Initializing variables,flowControl,287,
+,Enumerate iterables,flowControl,288,
+,Zip multiple iterables,flowControl,289,
+Python intro: Data visualization,Plotting dots and lines,visualization,290,
+,Subplot geometry,visualization,291,
+,Making graphs look nice,visualization,292,
+Python intro: Strings and texts,String interpolation and f-strings,text,293,
+,Importing text from the web,text,294,
+,Processing text,text,295,
+Python intro: Pytorch,Working with classes,pytorch,296,
+,Creating custom classes,pytorch,297,
+,"Datatypes, tensors, and dimensions",pytorch,298,
+,Reshaping tensors,pytorch,299,
+,Random numbers,pytorch,300,
+Part 8: Deep learning intro,,,,
+Math of deep learning,Terms and datatypes in math and computers,-,302,"Some important terms in linear algebra and python include scalar, vector, matrix, and tensor.
+There are ""types"" of numbers and variables, which can have different meanings in math vs. coding."
+,Vector and matrix transpose,part8_math_transpose,303,"""Transpose"" is an operation in linear algebra that involves swapping rows and columns in a vector or matrix.
+It's used a lot in linear algebra and deep learning, as you'll see in the next several videos."
+,Linear weighted combinations,part8_math_linWeightedCombo,304,"Linear weighted combinations are simple yet foundational in deep learning (and countless other applications!).
+Non-zero means do not necessarily bias the results.
+Simulating data and examining distributions can be very insightful when learning math."
+,The dot product ,part8_math_dotProduct,305,"There are several notations of the dot product.
+“Dot product” is just a fancy term for linear weighted combination.
+Libraries have built-in functions to calculate the dot product.
+PyTorch is more sensitive to datatypes than is numpy (a common source of errors!)."
+,Matrix multiplication ,part8_math_matrixMultiplication,306,"Matrix multiplication is valid only when “inner” matrix dimensions match.
+Matrix multiplication is just an organized collection of dot products.
+There are multiple ways to calculate matrix multiplication in numpy and pytorch.
+PyTorch functions can be sensitive to datatype."
+,Softmax,part8_math_softmax,307,"""Softmax"" is a mathematical operation used in deep learning to transform a set of numbers (often called ""logits"") into probabilities.
+Softmax is a nonlinear transformation. Inputs can be negative, but all outputs are positive.
+Language models use softmax to help select tokens (subwords)."
+,Logarithms,part8_math_log,308,"The logarithm is a nonlinear transformation of positive-valued numbers.
+It is often used in machine-learning and optimization to ""stretch out"" small numbers such as p-values."
+,Entropy and cross-entropy,part8_math_entropy,309,"Entropy is a mathematical measures of the ""surprise"" or unexpectedness of a system. It can be used as a measure of nonlinear variability.
+In deep learning, entropy and cross-entropy are used as error signals to train language models to select words that are consistent with human text."
+,Min/max and argmin/argmax,part8_math_argmin,310,"Min and max refer to the smallest (most negative) and largest values in a vector or matrix.
+The ""arg"" prefix refers to the index in the matrix where the extreme value was observed."
+,Mean and variance,part8_math_meanvar,311,"The mean is the average of a collection of numbers (sum divided by count). It is used as a measure of the most typical or representative number.
+Variance is the amount of dispersion in the data. Larger variance means the data values are more spread out around the mean."
+,Random sampling and sampling variability,part8_math_sampling,312,"Repeatedly taking data from a population will give different results. This is called ""sampling variability.""
+Sampling variability is a foundation of statistics, and is used in language modeling to probabilistically select from among the most likely next tokens."
+,The t-test,part8_math_ttest,313,"The t-test is a statistical evaluation that indicates whether the average of one group is different from the average of another group.
+The t-test has countless applications; in this course, we'll use the t-test when evaluating model performance and investigating circuits and mechanisms in attention layers."
+,Derivatives: intuition and polynomials,part8_math_derivatives1,314,"A derivative describes how a function changes. There are analytic (pure math) techniques for finding the derivative of a function, but you can also approximate it by calculating differences between neighboring points of a function.
+Among other uses, derivatives are used to find the minimum values of a function.
+Derivatives are central to training a language model: Represent the model's error as a loss function, calculate its derivative, and then use the derivative to find the model parameters that minimize the error."
+,Derivatives find minima,-,315,"Because the derivative indicates whether a function is increasing or decreasing, it can be used to point towards function minima.
+In deep learning including large language models, the functions and their derivatives are simple, but have so many variables that they cannot be fully calculated analytically. Therefore, estimation methods like gradient descent are used to find minima.
+There are some potentially difficult issues like local minima and vanishing gradients; modern techniques have some ways of avoiding these kinds of issues to help obtain good models."
+,Derivatives: product and chain rules,part8_math_derivatives2,316,"This video introduces two differentiation techniques for multiplied (product rule) and compound (chain rule) functions. Pytorch handles the implementational details of differentiation, but understanding more about derivatives will help you understand backprop."
+How models learn: gradient descent,Overview of gradient descent,-,317,"Gradient descent is the core algorithm that powers deep learning, by iteratively finding weights (parameters) that allow the model to learn structure in text data to classify and generate new text.
+A ""gradient"" is another word for the derivative, and thus, gradient descent simply involves calculating the local derivative of the loss function, and nudging the weights in the direction that decreases the loss.
+There are some modern techniques to help gradient descent perform well in large models, but the core method hasn't really changed in decades."
+,What about local minima?,-,318,"The optimization goal of training deep learning models is to find the *global* minimum of the error function, but gradient descent can get caught in *local* minima.
+Although this can be problematic in relatively small models, large network models rarely suffer from local minima, in part because there are so few (most apparent local minima are actually saddle points, where the function can go down a different direction).
+Modern optimizers such as Adam can adaptively navigate other potential issues such as vanishing gradients."
+,Gradient descent in 1D,part8_gradientDescent_1D,319,"Gradient descent in a 1D (single-variable) function provides a great visual intuition for how and why gradient decent works.
+This demo also reveals why gradient descent is not guaranteed to provide the global optimal solution (although it will be a good approximation given some assumptions)."
+,Gradient descent in 2D,part8_gradientDescent_2D,320,"This videos shows how gradient descent is extended from 1D (single-variable function) to 2D (two-variable function). The principles and the math are the same, but the implementation and possibile outcomes are slightly more complicated."
+,CodeChallenge: fixed vs. dynamic learning rate,part8_gradientDescent_CClearningrate,321,Here you will explore the impact of learning rate regimes on model performance.
+Essence of deep learning modeling,The perceptron and ANN architecture,-,322,"All deep learning models are built on the same foundational principles, which are many decades old.
+New advances in hardware, datasets, and some architectural and regularization methods have allowed modern deep learning networks like LLMs to become impressively capable.
+But understanding the ""essence"" of deep learning models as a perceptron will really help you learn about LLM mechanics."
+,A geometric view of ANNs,-,323,"Deep learning models can be conceptualized using geometry. This helps build intuition, although the visualizations don't always generalize to really large models."
+,ANN math part 1 (forward prop),-,324,Learn the math of the forward pass (hint: it's just a linear weighted combination + nonlinear activation).
+,"ANN math part 2 (errors, loss, cost)",-,325,"In this video, you'll learn about losses and costs -- the functions that deep learning models try to minimize during training."
+,ANN math part 3 (backprop),-,326,The math of backprop.
+,Forward pass in Pytorch,part8_essence_forwardpass,327,"Even the most complicated language models are simply dot product-calculators.
+Models are created using classes and PyTorch methods.
+“Tokenization” is the process of transforming text into numbers.
+Models are useless without properly defined weights!"
+,Backprop in Pytorch,part8_essence_backprop,328,"PyTorch handles the low-level details of back-propagation.
+Small, simple models that have analytic solutions and can be visualized are great for building intuition."
